@@ -11,10 +11,12 @@ import {
   Typography,
   Divider,
 } from "antd";
-import TableAccount from "./components/Table";
 
+// components
+import TableAccount from "./components/Table";
 const { Title } = Typography;
 const { useForm } = Form;
+
 // Config
 const BASE_API_URL = "https://front-end-test-assignment.fintech-market.com";
 
@@ -97,28 +99,26 @@ const App = () => {
 
   // Lifecycle
   useEffect(() => {
-    /* TODO */
-    if (typePayment) {
-    }
     setTypePayment("internal");
   }, [setListAccount, typePayment]);
 
   // Props Form
-  const { getFieldValue, resetFields, setFieldsValue } = form;
+  const { resetFields, setFieldsValue } = form;
 
   // Data value table new user
   const data: AccountProps[] = listAccount;
 
   // Call API create new account
-  const postCreateNewAccount = async () => {
+  const postCreateNewAccount = async (values: any) => {
     try {
       setIsLoading(true);
-      const newAccountName = getFieldValue("newaccount");
+      console.log("AAA");
       const requestBody = {
         data: {
-          name: newAccountName,
+          name: values.newaccount,
         },
       };
+
       const {
         data: { data: response },
       } = await axios.post(
@@ -138,28 +138,20 @@ const App = () => {
     }
   };
 
-  interface PayloadProps {
-    [key: string]: any;
-  }
-
-  const postCreateNewPayment = async () => {
+  const postCreateNewPayment = async (values: any) => {
     try {
       setIsProceed(true);
-      let requestBodyPayment: PayloadProps = {};
-      formList.map((list) => {
-        if (!list.required) {
-          requestBodyPayment["type_key"] = typePayment;
-          requestBodyPayment["description"] = getFieldValue("description");
-        }
-        requestBodyPayment[list.value] = getFieldValue(list.value);
-        return requestBodyPayment;
-      });
+      const payload = {
+        data: values,
+      };
+
+      console.log(payload);
       const {
         data: { data: response },
       } = await axios.post(
         BASE_API_URL + "/api/v1/payments",
         {
-          data: requestBodyPayment,
+          data: values,
         },
         config_auth
       );
@@ -239,18 +231,32 @@ const App = () => {
   return (
     <div className="App">
       <Row style={{ margin: "20px 0 0 10px" }}>
-        <Col span={10} style={{ height: "90vh" }}>
+        <Col span={11} style={{ height: "90vh" }}>
           <Col>
             <Title level={1}>Create New Account</Title>
             <Row>
               <Col span={12}>
                 <Row>
-                  <Form form={form} layout="vertical">
-                    <Form.Item label="New Account" name="newaccount" required>
+                  <Form
+                    name="accountForm"
+                    layout="vertical"
+                    onFinish={postCreateNewAccount}
+                  >
+                    <Form.Item
+                      label="New Account"
+                      name="newaccount"
+                      rules={[
+                        { required: true, message: "Name is required" },
+                        {
+                          min: 3,
+                          message: "Minimum 3 characters.",
+                        },
+                      ]}
+                    >
                       <Input placeholder="Name" />
                     </Form.Item>
-                    <Form.Item>
-                      <Button type="primary" onClick={postCreateNewAccount}>
+                    <Form.Item shouldUpdate>
+                      <Button type="primary" htmlType="submit">
                         Create
                       </Button>
                     </Form.Item>
@@ -261,13 +267,17 @@ const App = () => {
             <TableAccount dataSources={data} loading={isLoading} />
           </Col>
         </Col>
-        <Col span={2}>
+        <Col span={1}>
           <Divider style={{ height: "100%" }} type="vertical" />
         </Col>
 
         <Col span={12}>
           <Title level={1}>Create Payment</Title>
-          <Form form={form} layout="vertical" autoComplete="off">
+          <Form
+            name="paymentForm"
+            layout="vertical"
+            onFinish={postCreateNewPayment}
+          >
             <Form.Item label="Payment Type" name="paymentType">
               <Radio.Group onChange={choosePayment}>
                 <Radio.Button value="internal">Internal</Radio.Button>
@@ -287,9 +297,9 @@ const App = () => {
                 </Form.Item>
               );
             })}
-            <Form.Item>
-              <Button type="primary" onClick={postCreateNewPayment}>
-                Submit
+            <Form.Item shouldUpdate>
+              <Button type="primary" htmlType="submit">
+                Create
               </Button>
             </Form.Item>
           </Form>

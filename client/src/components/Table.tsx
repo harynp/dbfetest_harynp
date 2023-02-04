@@ -137,7 +137,14 @@ const TableAccount = (props: TableProps) => {
     },
   ];
 
-  return <Table columns={columns} dataSource={dataSources} loading={loading} />;
+  return (
+    <Table
+      columns={columns}
+      dataSource={dataSources}
+      loading={loading}
+      bordered
+    />
+  );
 };
 
 export default TableAccount;
