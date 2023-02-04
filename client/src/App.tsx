@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { InfoCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import {
   RadioChangeEvent,
   Form,
@@ -10,11 +9,9 @@ import {
   Radio,
   Button,
   Typography,
-  Table,
   Divider,
-  Space,
 } from "antd";
-import type { ColumnsType } from "antd/es/table";
+import TableAccount from "./components/Table";
 
 const { Title } = Typography;
 const { useForm } = Form;
@@ -37,34 +34,6 @@ type AccountProps = {
   number: string;
   balance: number;
 };
-
-// Attribute table account
-const columns: ColumnsType<AccountProps> = [
-  {
-    title: "ID",
-    dataIndex: "id",
-    key: "id",
-    width: "40%",
-  },
-  {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
-    width: "20%",
-  },
-  {
-    title: "Number",
-    dataIndex: "number",
-    key: "number",
-    width: "20%",
-  },
-  {
-    title: "Balance",
-    dataIndex: "balance",
-    key: "balance",
-    width: "20%",
-  },
-];
 
 type FormListProps = {
   label: string;
@@ -185,7 +154,6 @@ const App = () => {
         requestBodyPayment[list.value] = getFieldValue(list.value);
         return requestBodyPayment;
       });
-      // console.log(payload);
       const {
         data: { data: response },
       } = await axios.post(
@@ -196,14 +164,6 @@ const App = () => {
         config_auth
       );
       console.log(response);
-      // const payload = {
-      //   description: getFieldValue("description"),
-      //   amount: getFieldValue("description"),
-      //   type_key: typePayment,
-      //   remitter_account_id: getFieldValue("remitter_account_id"),
-      //   beneficiary_account_id: getFieldValue("beneficiary_account_id"),
-      // };
-      // console.log("AAAAA", payload);
     } catch (err) {
       console.log(err);
     }
@@ -217,8 +177,6 @@ const App = () => {
       setTypePayment("internal");
       return;
     }
-
-    // setTypePayment(e.target.value);
 
     switch (e.target.value) {
       case "internal":
@@ -300,15 +258,7 @@ const App = () => {
                 </Row>
               </Col>
             </Row>
-            <Row>
-              <Table
-                loading={isLoading}
-                columns={columns}
-                dataSource={data}
-                bordered
-                rowKey={(record) => record.id}
-              />
-            </Row>
+            <TableAccount dataSources={data} loading={isLoading} />
           </Col>
         </Col>
         <Col span={2}>
@@ -317,7 +267,6 @@ const App = () => {
 
         <Col span={12}>
           <Title level={1}>Create Payment</Title>
-
           <Form form={form} layout="vertical" autoComplete="off">
             <Form.Item label="Payment Type" name="paymentType">
               <Radio.Group onChange={choosePayment}>
@@ -338,7 +287,6 @@ const App = () => {
                 </Form.Item>
               );
             })}
-
             <Form.Item>
               <Button type="primary" onClick={postCreateNewPayment}>
                 Submit
