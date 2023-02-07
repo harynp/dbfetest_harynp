@@ -1,7 +1,9 @@
 # dbfetest_harynp
 
-Run FE: 
-npm start -> Port: 3000
+Go direct to folder client :
+1. npm install
+2. npm start
 
-Run BE :
-npm start -> Port: 5000
+Go direct to folder server :
+1. npm install
+2. npm start
