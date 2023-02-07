@@ -231,7 +231,6 @@ const App = () => {
         <Col span={12}>
           <Title level={1}>Create Payment</Title>
           <Form
-            form={form}
             name="paymentForm"
             layout="vertical"
             onFinish={postCreateNewPayment}
