@@ -26,8 +26,8 @@ axios.defaults.headers.common["Accept"] = "application/json";
 axios.defaults.headers.common["Content-Type"] = "application/json";
 const config_auth = {
   auth: {
-    username: "danabijak",
-    password: "iVpZk1C0AFFwDfDV",
+    username: process.env.REACT_APP_USERNAME || "",
+    password: process.env.REACT_APP_PASSWORD || "",
   },
 };
 
