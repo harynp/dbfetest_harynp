@@ -14,6 +14,7 @@ import {
 
 // components
 import TableAccount from "./components/Table";
+import { AccountProps, FormListProps, listPaymentProps } from "./types";
 const { Title } = Typography;
 const { useForm } = Form;
 
@@ -29,50 +30,6 @@ const config_auth = {
     password: "iVpZk1C0AFFwDfDV",
   },
 };
-// Types
-type AccountProps = {
-  id: string;
-  name: string;
-  number: string;
-  balance: number;
-};
-
-type FormListProps = {
-  label: string;
-  value: string | number;
-  required?: boolean;
-};
-
-type InternalPaymentProps = {
-  description?: string;
-  amount: number;
-  type_key: string;
-  remitter_account_id: string;
-  beneficiary_account_id: string;
-};
-
-type IncomingPaymentProps = {
-  description?: string;
-  amount: number;
-  type_key: string;
-  beneficiary_account_id: string;
-  remitter_name: string;
-  remitter_account_number: string;
-};
-
-type OutcomingPaymentProps = {
-  description?: string;
-  amount: number;
-  type_key: string;
-  remitter_account_id: string;
-  beneficiary_name: string;
-  beneficiary_account_number: string;
-};
-
-type listPaymentProps =
-  | InternalPaymentProps
-  | IncomingPaymentProps
-  | OutcomingPaymentProps;
 
 const App = () => {
   // State
@@ -144,8 +101,7 @@ const App = () => {
       const payload = {
         data: values,
       };
-
-      console.log(payload);
+      alert(JSON.stringify(payload));
       const {
         data: { data: response },
       } = await axios.post(
@@ -238,6 +194,7 @@ const App = () => {
               <Col span={12}>
                 <Row>
                   <Form
+                    form={form}
                     name="accountForm"
                     layout="vertical"
                     onFinish={postCreateNewAccount}
@@ -274,6 +231,7 @@ const App = () => {
         <Col span={12}>
           <Title level={1}>Create Payment</Title>
           <Form
+            form={form}
             name="paymentForm"
             layout="vertical"
             onFinish={postCreateNewPayment}
@@ -303,7 +261,6 @@ const App = () => {
               </Button>
             </Form.Item>
           </Form>
-          <h2>{JSON.stringify(listPayment)}</h2>
         </Col>
       </Row>
     </div>

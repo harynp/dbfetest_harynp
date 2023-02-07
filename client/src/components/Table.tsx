@@ -143,6 +143,7 @@ const TableAccount = (props: TableProps) => {
       dataSource={dataSources}
       loading={loading}
       bordered
+      rowKey={"id"}
     />
   );
 };
